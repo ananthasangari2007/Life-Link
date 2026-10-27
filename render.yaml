@@ -1,0 +1,35 @@
+# ==============================================================================
+# Render Blueprint Specification for LifeLink
+# Deploy the Java Spring Boot Backend to Render Free / Starter Web Service
+# ==============================================================================
+services:
+  - type: web
+    name: lifelink-backend
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://pg-3f7545bd-ananthasangari2007-2330.j.aivencloud.com:21859/defaultdb?sslmode=require
+      - key: SPRING_DATASOURCE_USERNAME
+        value: avnadmin
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false # Set your Aiven avnadmin password in Render Dashboard
+      - key: DB_POOL_SIZE
+        value: "5"
+      - key: APP_JWT_SECRET
+        generateValue: true
+      - key: APP_JWT_EXPIRATION_MS
+        value: "86400000"
+      - key: APP_BOOTSTRAP_ADMIN_ENABLED
+        value: "true"
+      - key: APP_ADMIN_EMAIL
+        value: admin@lifelink.network
+      - key: APP_ADMIN_PASSWORD
+        sync: false # Specify secure admin password in Render Dashboard
+      - key: APP_CORS_ALLOWED_ORIGINS
+        value: "http://localhost:5173,https://localhost:3000,https://lifelink.vercel.app"

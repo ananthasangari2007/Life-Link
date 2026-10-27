@@ -1,0 +1,36 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://pg-3f7545bd-ananthasangari2007-2330.j.aivencloud.com:21859/defaultdb?sslmode=require}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:avnadmin}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:5}
+      minimum-idle: 0
+      connection-timeout: 30000
+      idle-timeout: 300000
+      max-lifetime: 900000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: ${DB_SCHEMA:public}
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    clean-disabled: true
+    table: flyway_schema_history_lifelink
+    schemas: ${DB_SCHEMA:public}
+
+logging:
+  level:
+    root: INFO
+    com.lifelink: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
