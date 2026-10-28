@@ -55,6 +55,14 @@ public class FacilityService {
     }
 
     @Transactional(readOnly = true)
+    public List<FacilityDto> getAllApprovedFacilities() {
+        return facilityRepository.findByStatus(FacilityStatus.APPROVED)
+                .stream()
+                .map(FacilityDto::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<FacilityDto> getApprovedFacilitiesByType(FacilityType type) {
         return facilityRepository.findByTypeAndStatus(type, FacilityStatus.APPROVED)
                 .stream()

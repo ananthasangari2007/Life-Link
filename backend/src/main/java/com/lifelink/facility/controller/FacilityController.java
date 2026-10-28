@@ -32,14 +32,14 @@ public class FacilityController {
         this.securityUtils = securityUtils;
     }
 
-    @GetMapping("/public/approved")
+    @GetMapping({"/public", "/public/approved"})
     @Operation(summary = "Public Approved Facilities", description = "Returns active verified hospitals and blood banks for public viewing")
     public ResponseEntity<ApiResponse<List<FacilityDto>>> getPublicApprovedFacilities(
             @RequestParam(required = false) FacilityType type
     ) {
         List<FacilityDto> list = type != null
                 ? facilityService.getApprovedFacilitiesByType(type)
-                : facilityService.getApprovedFacilitiesByType(FacilityType.BLOOD_BANK);
+                : facilityService.getAllApprovedFacilities();
         return ResponseEntity.ok(ApiResponse.ok(list));
     }
 

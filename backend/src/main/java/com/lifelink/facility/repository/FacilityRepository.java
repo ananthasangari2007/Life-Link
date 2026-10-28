@@ -16,6 +16,7 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
     Optional<Facility> findByLicenseNumber(String licenseNumber);
     boolean existsByLicenseNumber(String licenseNumber);
     List<Facility> findByTypeAndStatus(FacilityType type, FacilityStatus status);
+    List<Facility> findByStatus(FacilityStatus status);
     Page<Facility> findByStatus(FacilityStatus status, Pageable pageable);
     Page<Facility> findByType(FacilityType type, Pageable pageable);
     long countByStatus(FacilityStatus status);

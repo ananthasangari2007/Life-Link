@@ -148,7 +148,7 @@ public class DemoDataSeederService implements CommandLineRunner {
                 savedHospital,
                 "Head of Emergency Medicine"
         );
-        userRepository.save(hospitalUser);
+        User savedHospitalUser = userRepository.save(hospitalUser);
 
         // 2. Create Fictional Blood Bank A
         Facility bankA = new Facility(
@@ -174,7 +174,7 @@ public class DemoDataSeederService implements CommandLineRunner {
                 savedBankA,
                 "Chief Blood Transfusion Officer"
         );
-        userRepository.save(bankUserA);
+        User savedBankUserA = userRepository.save(bankUserA);
 
         // 3. Create Fictional Blood Bank B
         Facility bankB = new Facility(
@@ -212,16 +212,16 @@ public class DemoDataSeederService implements CommandLineRunner {
                 savedBankA, "BATCH-A1-2026", BloodGroup.A_POSITIVE, ComponentType.RED_BLOOD_CELLS,
                 12, now.minus(5, ChronoUnit.DAYS), now.plus(25, ChronoUnit.DAYS), "Refrigerated Rack 01", "Simulated demo stock"
         );
-        batchRepository.save(b1);
-        transactionRepository.save(new InventoryTransaction(b1, savedBankA, TransactionType.COLLECTION, 12, 12, "DEMO_SEED", b1.getId(), bankUserA, "Initial demo stock"));
+        BloodInventoryBatch savedB1 = batchRepository.save(b1);
+        transactionRepository.save(new InventoryTransaction(savedB1, savedBankA, TransactionType.COLLECTION, 12, 12, "DEMO_SEED", savedB1.getId(), savedBankUserA, "Initial demo stock"));
 
         // O- PRBC (Universal Donor - 6 units, 18 days left)
         BloodInventoryBatch b2 = new BloodInventoryBatch(
                 savedBankA, "BATCH-O1-2026", BloodGroup.O_NEGATIVE, ComponentType.RED_BLOOD_CELLS,
                 6, now.minus(7, ChronoUnit.DAYS), now.plus(18, ChronoUnit.DAYS), "Refrigerated Rack 02", "Universal donor stock (Demo)"
         );
-        batchRepository.save(b2);
-        transactionRepository.save(new InventoryTransaction(b2, savedBankA, TransactionType.COLLECTION, 6, 6, "DEMO_SEED", b2.getId(), bankUserA, "Initial demo stock"));
+        BloodInventoryBatch savedB2 = batchRepository.save(b2);
+        transactionRepository.save(new InventoryTransaction(savedB2, savedBankA, TransactionType.COLLECTION, 6, 6, "DEMO_SEED", savedB2.getId(), savedBankUserA, "Initial demo stock"));
 
         // Near-Expiry Platelets (4 units, 3 days left!)
         BloodInventoryBatch b3 = new BloodInventoryBatch(
@@ -265,7 +265,7 @@ public class DemoDataSeederService implements CommandLineRunner {
         BloodRequest sampleReq = new BloodRequest(
                 "REQ-2026-DEMO-001",
                 savedHospital,
-                hospitalUser,
+                savedHospitalUser,
                 BloodGroup.A_POSITIVE,
                 ComponentType.RED_BLOOD_CELLS,
                 4,
@@ -280,31 +280,31 @@ public class DemoDataSeederService implements CommandLineRunner {
 
         // Response from Bank A
         BloodRequestResponse respA = new BloodRequestResponse(savedReq, savedBankA);
-        respA.accept(4, bankUserA, "Units prepared and packaged with cold chain packaging.");
+        respA.accept(4, savedBankUserA, "Units prepared and packaged with cold chain packaging.");
         responseRepository.save(respA);
 
         // Reservation
         StockReservation res = new StockReservation(
                 "RES-DEMO-A1",
                 savedReq,
-                b1,
+                savedB1,
                 savedBankA,
                 4,
                 now.plus(24, ChronoUnit.HOURS)
         );
         res.markDispatched();
-        reservationRepository.save(res);
+        StockReservation savedRes = reservationRepository.save(res);
 
         // Transfer
         BloodTransfer transfer = new BloodTransfer(
                 "TRF-DEMO-001",
                 savedReq,
-                res,
+                savedRes,
                 savedBankA,
                 savedHospital,
                 4
         );
-        transfer.dispatch(bankUserA, "LifeLink Dedicated Courier Unit 4", "Validated temperature: 3.8°C", "Urgent dispatch");
+        transfer.dispatch(savedBankUserA, "LifeLink Dedicated Courier Unit 4", "Validated temperature: 3.8°C", "Urgent dispatch");
         transferRepository.save(transfer);
 
         log.info("Simulated demo healthcare network seeded successfully with 1 Hospital and 3 Blood Banks.");
