@@ -57,6 +57,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public Endpoints
                         .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/assets/**",
+                                "/*.svg",
+                                "/*.ico",
+                                "/*.png",
+                                "/favicon.svg",
                                 "/api/v1/auth/**",
                                 "/api/v1/demo/**",
                                 "/actuator/health",
@@ -71,7 +78,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("NETWORK_ADMIN")
                         .requestMatchers("/api/v1/audit/**").hasAnyRole("NETWORK_ADMIN", "AUDITOR")
 
-                        // Everything else requires authentication
+                        // Permit SPA client-side routes (non-API)
+                        .requestMatchers(request -> !request.getServletPath().startsWith("/api/")).permitAll()
+
+                        // Everything else under /api requires authentication
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
